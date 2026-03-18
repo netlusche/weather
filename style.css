@@ -1151,6 +1151,35 @@ button:hover {
   .mini-control {
     width: auto;
   }
+
+  :root[data-theme="lcars"] .display-controls {
+    gap: 0.5rem;
+    padding: 0.3rem 0.45rem;
+  }
+
+  :root[data-theme="lcars"] .mini-control {
+    gap: 0.28rem;
+  }
+
+  :root[data-theme="lcars"] .control-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+
+  :root[data-theme="lcars"] #theme-select-wrap.inline-select {
+    width: 6.25rem;
+  }
+
+  :root[data-theme="lcars"] #language-select-wrap.inline-select {
+    width: 5.35rem;
+  }
+
+  :root[data-theme="lcars"] .compact-trigger {
+    min-height: 1.55rem;
+    padding: 0.18rem 1.2rem 0.18rem 0.5rem;
+    font-size: 0.58rem;
+    border-radius: 10px;
+  }
 }
 
 :root[data-theme="lcars"] {
