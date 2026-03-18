@@ -102,6 +102,7 @@ $languageOptions = array(
 );
 
 $cities = getCities();
+$basePath = getBasePath();
 $searchInputValue = getSearchInputValue();
 $selectedLocation = resolveLocation($cities);
 $weatherResult = getWeather($apiKey, $selectedLocation, $uiLanguage);
@@ -144,7 +145,7 @@ function e($value) {
     const savedTheme = localStorage.getItem('weatherTheme') || 'light';
     document.documentElement.dataset.theme = savedTheme;
   </script>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="<?php echo e(assetPath('style.css')); ?>">
 </head>
 <body>
   <div class="matrix-rain" id="matrix-rain" aria-hidden="true"></div>
@@ -223,7 +224,7 @@ function e($value) {
         </p>
       </div>
 
-      <form action="index.php" method="post" class="search-panel" id="weather-form">
+      <form action="<?php echo e(assetPath('index.php')); ?>" method="post" class="search-panel" id="weather-form">
         <input type="hidden" name="ui_lang" id="ui-lang" value="<?php echo e($uiLanguage); ?>">
 
           <div class="field-group">
@@ -295,7 +296,7 @@ function e($value) {
               <p class="subtle-text"><?php echo e(t('updated_at', $translations, $uiLanguage)); ?> <?php echo e($updatedAt); ?><?php echo $uiLanguage === 'de' ? ' Uhr' : ''; ?></p>
             </div>
             <?php if ($currentIconUrl !== ''): ?>
-              <img class="weather-icon weather-icon-current" src="<?php echo e($currentIconUrl); ?>" alt="<?php echo e($weatherDescription); ?>">
+              <img class="weather-icon weather-icon-current" src="<?php echo e(assetPath($currentIconUrl)); ?>" alt="<?php echo e($weatherDescription); ?>">
             <?php else: ?>
               <div class="weather-symbol" aria-hidden="true"><?php echo e($currentSymbol); ?></div>
             <?php endif; ?>
@@ -334,7 +335,7 @@ function e($value) {
                 <p class="day-title"><?php echo e($day['weekday']); ?></p>
                 <p class="day-date"><?php echo e($day['date_label']); ?></p>
                 <?php if (!empty($day['icon_url'])): ?>
-                  <img class="weather-icon weather-icon-day" src="<?php echo e($day['icon_url']); ?>" alt="<?php echo e($day['description']); ?>">
+                  <img class="weather-icon weather-icon-day" src="<?php echo e(assetPath($day['icon_url'])); ?>" alt="<?php echo e($day['description']); ?>">
                 <?php else: ?>
                   <div class="day-symbol" aria-hidden="true"><?php echo e($day['symbol']); ?></div>
                 <?php endif; ?>
@@ -355,7 +356,7 @@ function e($value) {
                   </div>
                   <div class="detail-body">
                     <?php if (!empty($entry['icon_url'])): ?>
-                      <img class="weather-icon weather-icon-detail" src="<?php echo e($entry['icon_url']); ?>" alt="<?php echo e($entry['description']); ?>">
+                      <img class="weather-icon weather-icon-detail" src="<?php echo e(assetPath($entry['icon_url'])); ?>" alt="<?php echo e($entry['description']); ?>">
                     <?php else: ?>
                       <span class="detail-symbol" aria-hidden="true"><?php echo e($entry['symbol']); ?></span>
                     <?php endif; ?>
@@ -565,7 +566,7 @@ function e($value) {
       activeRequest = new AbortController();
 
       try {
-        const response = await fetch(`index.php?action=suggest&q=${encodeURIComponent(query)}`, {
+        const response = await fetch(`<?php echo e(assetPath('index.php')); ?>?action=suggest&q=${encodeURIComponent(query)}`, {
           signal: activeRequest.signal
         });
 

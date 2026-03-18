@@ -416,6 +416,24 @@ function getWeatherIconUrl($iconCode, $size = '2x') {
   return 'assets/weather-icons/clear-day.svg';
 }
 
+function getBasePath() {
+  $scriptName = isset($_SERVER['SCRIPT_NAME']) ? (string) $_SERVER['SCRIPT_NAME'] : '';
+  $basePath = str_replace('\\', '/', dirname($scriptName));
+
+  if ($basePath === '/' || $basePath === '\\' || $basePath === '.') {
+    return '';
+  }
+
+  return rtrim($basePath, '/');
+}
+
+function assetPath($relativePath) {
+  $relativePath = ltrim((string) $relativePath, '/');
+  $basePath = getBasePath();
+
+  return ($basePath !== '' ? $basePath . '/' : '') . $relativePath;
+}
+
 function formatCityTime($timestamp, $timezoneOffset, $format) {
   return gmdate($format, (int) $timestamp + (int) $timezoneOffset);
 }
