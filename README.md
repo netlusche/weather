@@ -59,13 +59,38 @@ http://127.0.0.1:8000
 
 ## Configuration
 
-The app supports an environment variable for the OpenWeather API key:
+The app supports two safe ways to provide the OpenWeather API key:
+
+1. Environment variable
 
 ```bash
 export OPENWEATHER_API_KEY="your_api_key_here"
 ```
 
-If no environment variable is present, the application falls back to the key currently defined in [getweather.php](/Users/frank/Codex/Weather/getweather.php).
+2. Local PHP config file
+
+Copy the example file and add your personal key:
+
+```bash
+cp config.local.example.php config.local.php
+```
+
+Then edit `config.local.php` and insert your key.
+
+The local config file is ignored by Git and is meant for private development only.
+
+The app checks configuration in this order:
+
+- `OPENWEATHER_API_KEY`
+- `config.local.php`
+
+If neither is present, the weather API requests will fail until a key is configured.
+
+## Security Notes
+
+- Never commit a real API key to the repository.
+- `config.local.php` is intentionally ignored via `.gitignore`.
+- If a key was ever committed publicly, rotate it in your OpenWeather account immediately.
 
 ## UX Notes
 

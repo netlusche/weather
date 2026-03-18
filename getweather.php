@@ -1,5 +1,25 @@
 <?php
-$apiKey = getenv('OPENWEATHER_API_KEY') ?: 'REDACTED_OPENWEATHER_API_KEY';
+function loadApiKey() {
+  $envKey = trim((string) getenv('OPENWEATHER_API_KEY'));
+  if ($envKey !== '') {
+    return $envKey;
+  }
+
+  $localConfigPath = __DIR__ . '/config.local.php';
+  if (is_file($localConfigPath)) {
+    $localConfig = require $localConfigPath;
+    if (is_array($localConfig) && isset($localConfig['openweather_api_key'])) {
+      $configKey = trim((string) $localConfig['openweather_api_key']);
+      if ($configKey !== '') {
+        return $configKey;
+      }
+    }
+  }
+
+  return '';
+}
+
+$apiKey = loadApiKey();
 
 function getCities() {
   return array(
