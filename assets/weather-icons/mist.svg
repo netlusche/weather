@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 128" role="img" aria-hidden="true">
+  <defs>
+    <linearGradient id="cloudFill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#dbe7f2"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(22 8)">
+    <path d="M28 58c-15.5 0-28-11.2-28-25 0-12.2 10-22.4 23.5-24.5C28 3.5 36.6 0 46 0c16 0 29.3 10.7 32.7 24.8 2.6-1 5.5-1.5 8.4-1.5 13.8 0 24.9 10.1 24.9 22.5S100.9 68 87.1 68H28z" fill="url(#cloudFill)" stroke="#c7d4e2" stroke-width="3"/>
+  </g>
+  <g fill="#c7d4e2">
+    <rect x="24" y="88" width="112" height="8" rx="4"/>
+    <rect x="16" y="102" width="96" height="8" rx="4"/>
+    <rect x="52" y="116" width="92" height="8" rx="4"/>
+  </g>
+</svg>

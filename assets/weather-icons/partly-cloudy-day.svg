@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 128" role="img" aria-hidden="true">
+  <defs>
+    <radialGradient id="sunCore" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#fff7a8"/>
+      <stop offset="70%" stop-color="#ffd43b"/>
+      <stop offset="100%" stop-color="#ffae1f"/>
+    </radialGradient>
+    <linearGradient id="cloudFill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#dbe7f2"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(8 0)">
+    <g fill="#ffb11f" stroke="#e28c12" stroke-width="2" stroke-linejoin="round">
+      <path d="M48 4l6 15-6-4-6 4z"/>
+      <path d="M48 76l-6-15 6 4 6-4z"/>
+      <path d="M8 40l15-6-4 6 4 6z"/>
+      <path d="M88 40l-15 6 4-6-4-6z"/>
+      <path d="M20 12l13 4-6 2-2 6z"/>
+      <path d="M76 68l-13-4 6-2 2-6z"/>
+      <path d="M20 68l4-13 2 6 6 2z"/>
+      <path d="M76 12l-4 13-2-6-6-2z"/>
+    </g>
+    <circle cx="48" cy="40" r="22" fill="url(#sunCore)" stroke="#e29118" stroke-width="3"/>
+  </g>
+  <g transform="translate(28 34)">
+    <path d="M28 58c-15.5 0-28-11.2-28-25 0-12.2 10-22.4 23.5-24.5C28 3.5 36.6 0 46 0c16 0 29.3 10.7 32.7 24.8 2.6-1 5.5-1.5 8.4-1.5 13.8 0 24.9 10.1 24.9 22.5S100.9 68 87.1 68H28z" fill="url(#cloudFill)" stroke="#c7d4e2" stroke-width="3"/>
+  </g>
+</svg>
