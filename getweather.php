@@ -119,6 +119,47 @@ function getSearchInputValue() {
   return isset($_POST['location_search']) ? trim((string) $_POST['location_search']) : '';
 }
 
+function getSupportedLanguage($value) {
+  $language = strtolower(trim((string) $value));
+  $supportedLanguages = array('de', 'en');
+
+  return in_array($language, $supportedLanguages, true) ? $language : 'en';
+}
+
+function getBrowserLanguage() {
+  if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+    return 'en';
+  }
+
+  $accepted = explode(',', (string) $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+  foreach ($accepted as $entry) {
+    $locale = strtolower(trim(explode(';', $entry)[0]));
+    $primary = substr($locale, 0, 2);
+
+    if (in_array($primary, array('de', 'en'), true)) {
+      return $primary;
+    }
+  }
+
+  return 'en';
+}
+
+function getLanguageValue() {
+  if (isset($_POST['ui_lang'])) {
+    return getSupportedLanguage($_POST['ui_lang']);
+  }
+
+  if (isset($_GET['lang'])) {
+    return getSupportedLanguage($_GET['lang']);
+  }
+
+  if (isset($_COOKIE['weather_lang'])) {
+    return getSupportedLanguage($_COOKIE['weather_lang']);
+  }
+
+  return getBrowserLanguage();
+}
+
 function fetchWeatherData($url) {
   $ch = curl_init();
 
@@ -216,7 +257,7 @@ function fetchJsonData($url) {
   );
 }
 
-function getWeather($apiKey, $location) {
+function getWeather($apiKey, $location, $language = 'de') {
   if (trim((string) $apiKey) === '') {
     return array(
       'data' => null,
@@ -224,12 +265,12 @@ function getWeather($apiKey, $location) {
     );
   }
 
-  $url = 'https://api.openweathermap.org/data/2.5/weather?q=' . rawurlencode($location) . '&units=metric&lang=de&appid=' . rawurlencode($apiKey);
+  $url = 'https://api.openweathermap.org/data/2.5/weather?q=' . rawurlencode($location) . '&units=metric&lang=' . rawurlencode(getSupportedLanguage($language)) . '&appid=' . rawurlencode($apiKey);
 
   return fetchWeatherData($url);
 }
 
-function getForecast($location, $apiKey) {
+function getForecast($location, $apiKey, $language = 'de') {
   if (trim((string) $apiKey) === '') {
     return array(
       'data' => null,
@@ -237,7 +278,7 @@ function getForecast($location, $apiKey) {
     );
   }
 
-  $url = 'https://api.openweathermap.org/data/2.5/forecast?q=' . rawurlencode($location) . '&units=metric&lang=de&appid=' . rawurlencode($apiKey);
+  $url = 'https://api.openweathermap.org/data/2.5/forecast?q=' . rawurlencode($location) . '&units=metric&lang=' . rawurlencode(getSupportedLanguage($language)) . '&appid=' . rawurlencode($apiKey);
 
   return fetchWeatherData($url);
 }
@@ -359,32 +400,78 @@ function formatCityTime($timestamp, $timezoneOffset, $format) {
   return gmdate($format, (int) $timestamp + (int) $timezoneOffset);
 }
 
-function getCurrentWeatherMetrics($weather) {
+function getLocalizedWeekdayShort($timestamp, $timezoneOffset, $language) {
+  $weekday = gmdate('D', (int) $timestamp + (int) $timezoneOffset);
+  $maps = array(
+    'de' => array(
+      'Mon' => 'Mo',
+      'Tue' => 'Di',
+      'Wed' => 'Mi',
+      'Thu' => 'Do',
+      'Fri' => 'Fr',
+      'Sat' => 'Sa',
+      'Sun' => 'So'
+    ),
+    'en' => array(
+      'Mon' => 'Mon',
+      'Tue' => 'Tue',
+      'Wed' => 'Wed',
+      'Thu' => 'Thu',
+      'Fri' => 'Fri',
+      'Sat' => 'Sat',
+      'Sun' => 'Sun'
+    )
+  );
+
+  $language = getSupportedLanguage($language);
+
+  return isset($maps[$language][$weekday]) ? $maps[$language][$weekday] : $weekday;
+}
+
+function getCurrentWeatherMetrics($weather, $language = 'de') {
   if (!isset($weather->main) || !isset($weather->wind)) {
     return array();
   }
 
+  $labels = array(
+    'de' => array(
+      'feels_like' => 'Gefühlt',
+      'humidity' => 'Luftfeuchte',
+      'wind' => 'Wind',
+      'pressure' => 'Druck'
+    ),
+    'en' => array(
+      'feels_like' => 'Feels like',
+      'humidity' => 'Humidity',
+      'wind' => 'Wind',
+      'pressure' => 'Pressure'
+    )
+  );
+
+  $language = getSupportedLanguage($language);
+  $set = $labels[$language];
+
   return array(
     array(
-      'label' => 'Gefühlt',
+      'label' => $set['feels_like'],
       'value' => round((float) $weather->main->feels_like) . '°C'
     ),
     array(
-      'label' => 'Luftfeuchte',
+      'label' => $set['humidity'],
       'value' => (int) $weather->main->humidity . '%'
     ),
     array(
-      'label' => 'Wind',
+      'label' => $set['wind'],
       'value' => round((float) $weather->wind->speed, 1) . ' m/s'
     ),
     array(
-      'label' => 'Druck',
+      'label' => $set['pressure'],
       'value' => (int) $weather->main->pressure . ' hPa'
     )
   );
 }
 
-function getDailyForecastSummaries($forecast, $limit = 5) {
+function getDailyForecastSummaries($forecast, $limit = 5, $language = 'de') {
   if (!isset($forecast->list) || !is_array($forecast->list)) {
     return array();
   }
@@ -403,7 +490,7 @@ function getDailyForecastSummaries($forecast, $limit = 5) {
     if (!isset($groups[$dateKey])) {
       $groups[$dateKey] = array(
         'date_label' => formatCityTime($timestamp, $timezoneOffset, 'd.m.'),
-        'weekday' => formatCityTime($timestamp, $timezoneOffset, 'D'),
+        'weekday' => getLocalizedWeekdayShort($timestamp, $timezoneOffset, $language),
         'temp_min' => $temperature,
         'temp_max' => $temperature,
         'description' => $description,
@@ -439,7 +526,7 @@ function getDailyForecastSummaries($forecast, $limit = 5) {
   return array_slice($summaries, 0, $limit);
 }
 
-function getForecastEntries($forecast) {
+function getForecastEntries($forecast, $language = 'de') {
   if (!isset($forecast->list) || !is_array($forecast->list)) {
     return array();
   }
@@ -453,7 +540,7 @@ function getForecastEntries($forecast) {
     $icon = isset($entry->weather[0]->icon) ? (string) $entry->weather[0]->icon : '';
 
     $entries[] = array(
-      'weekday' => formatCityTime($timestamp, $timezoneOffset, 'D'),
+      'weekday' => getLocalizedWeekdayShort($timestamp, $timezoneOffset, $language),
       'date' => formatCityTime($timestamp, $timezoneOffset, 'd.m.Y'),
       'time' => formatCityTime($timestamp, $timezoneOffset, 'H:i'),
       'temperature' => round((float) $entry->main->temp),

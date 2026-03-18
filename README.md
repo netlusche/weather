@@ -1,45 +1,80 @@
 # Weather
 
-Kleine PHP-Webanwendung zur Wetterabfrage mit aktueller Temperatur und 5-Tage-Vorhersage ueber die OpenWeatherMap-API.
+A PHP weather dashboard powered by the OpenWeather API. The project started as a simple weather lookup and has evolved into a themed, interactive UI with live location suggestions, multiple visual themes, and responsive layouts.
 
-## Funktionen
+## Features
 
-- Auswahl einer Stadt aus einer vordefinierten Liste
-- Anzeige der aktuellen Temperatur und Wetterbeschreibung
-- Ausgabe einer Wettervorhersage in Tabellenform
-- Einfache Darstellung mit CSS
+- Current weather conditions for the selected city
+- Compact 5-day overview plus expandable 3-hour forecast details
+- Predefined city selector with custom overlay UI
+- Free-text location search with live suggestions from the OpenWeather geocoding API
+- Immediate loading on city selection or suggestion click
+- Responsive layout optimized for desktop and mobile
+- Built-in language switching for German and English
+- Browser-language based default UI language with English as fallback
+- Theme selector with persistent client-side theme storage
 
-## Voraussetzungen
+## Available Themes
 
-- PHP mit aktivierter `curl`-Erweiterung
-- Internetzugang fuer die API-Anfragen an OpenWeatherMap
+- `Standard - light`
+- `Standard - dark`
+- `Cyberpunk`
+  Uses neon blue and neon pink accents, a more stylized techno type treatment, and a subtle animated background.
+- `Matrix`
+  Uses green terminal-style visuals with animated falling character rain in the background.
+- `LCARS`
+  Uses a Star Trek inspired interface language with stronger yellow and blue accents plus subtle animated background bands.
 
-## Projektstruktur
+## Project Structure
 
-- `index.php`: Startseite und Ausgabe der Wetterdaten
-- `getweather.php`: API-Zugriffe, Hilfsfunktionen und Forecast-Ausgabe
-- `style.css`: Einfaches Styling der Oberflaeche
+- `index.php`
+  Main page, layout, theme/language controls, and client-side interactions
+- `getweather.php`
+  Weather/geocoding API calls, helpers, forecast grouping, and localization helpers
+- `style.css`
+  Full styling for layout, responsive behavior, overlays, and themes
+- `assets/weather-icons/`
+  Local weather icon set used by the app
+- `LICENSE`
+  GNU General Public License v3
 
-## Lokale Nutzung
+## Requirements
 
-1. Repository klonen oder Dateien herunterladen
-2. Im Projektverzeichnis einen PHP-Server starten:
+- PHP with the `curl` extension enabled
+- Internet access for OpenWeather weather data and geocoding requests
+
+## Local Development
+
+Start a local PHP server from the project directory:
 
 ```bash
-php -S localhost:8000
+php -S 127.0.0.1:8000
 ```
 
-3. Im Browser `http://localhost:8000` aufrufen
+Then open:
 
-## Konfiguration
+```text
+http://127.0.0.1:8000
+```
 
-Der OpenWeatherMap-API-Key ist aktuell direkt in [`getweather.php`](/Users/frank/Codex/Weather/getweather.php) hinterlegt. Fuer produktive Nutzung sollte er in eine Umgebungsvariable oder eine nicht versionierte Konfigurationsdatei ausgelagert werden.
+## Configuration
 
-## Hinweise
+The app supports an environment variable for the OpenWeather API key:
 
-- Die Anwendung nutzt derzeit HTTP-Endpunkte fuer die API-Aufrufe.
-- Fehlerbehandlung fuer fehlgeschlagene API-Antworten ist nur eingeschraenkt vorhanden.
+```bash
+export OPENWEATHER_API_KEY="your_api_key_here"
+```
 
-## Lizenz
+If no environment variable is present, the application falls back to the key currently defined in [getweather.php](/Users/frank/Codex/Weather/getweather.php).
 
-Dieses Projekt steht unter der GNU General Public License v3. Details siehe [`LICENSE`](/Users/frank/Codex/Weather/LICENSE).
+## UX Notes
+
+- The location selector is a custom overlay instead of a native browser select.
+- The search field supports free text entries and live suggestions.
+- Clicking a suggestion loads the weather immediately.
+- Clicking a location in the selector also loads the weather immediately.
+- The top utility bar keeps theme and language controls accessible across screen sizes.
+
+## License
+
+This project is licensed under the GNU General Public License v3. See [LICENSE](/Users/frank/Codex/Weather/LICENSE) for details.
