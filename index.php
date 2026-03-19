@@ -1,5 +1,5 @@
 <?php
-require_once 'getweather.php';
+require_once __DIR__ . '/getweather.php';
 
 $uiLanguage = getLanguageValue();
 setcookie('weather_lang', $uiLanguage, time() + (60 * 60 * 24 * 365), '/');
@@ -103,8 +103,10 @@ $languageOptions = array(
 
 $cities = getCities();
 $basePath = getBasePath();
+$cookiePath = $basePath !== '' ? $basePath : '/';
 $searchInputValue = getSearchInputValue();
 $selectedLocation = resolveLocation($cities);
+setcookie('weather_location', $selectedLocation, time() + (60 * 60 * 24 * 365), $cookiePath);
 $weatherResult = getWeather($apiKey, $selectedLocation, $uiLanguage);
 $forecastResult = getForecast($selectedLocation, $apiKey, $uiLanguage);
 $errorMessage = $weatherResult['error'] ?: $forecastResult['error'];

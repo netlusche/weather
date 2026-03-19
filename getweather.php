@@ -113,23 +113,42 @@ function normalizeCityName($value) {
   return strtr($value, $map);
 }
 
+function matchKnownCity($value, $cities) {
+  $normalizedValue = normalizeCityName($value);
+
+  if ($normalizedValue === '') {
+    return '';
+  }
+
+  foreach ($cities as $city) {
+    if (strcasecmp(normalizeCityName($city), $normalizedValue) === 0) {
+      return $city;
+    }
+  }
+
+  return '';
+}
+
 function resolveLocation($cities) {
-  $defaultCity = 'Bielefeld';
+  $defaultCity = 'London';
   $searchValue = isset($_POST['location_search']) ? trim((string) $_POST['location_search']) : '';
   $selectValue = isset($_POST['location_select']) ? normalizeCityName($_POST['location_select']) : '';
+  $cookieValue = isset($_COOKIE['weather_location']) ? trim((string) $_COOKIE['weather_location']) : '';
 
   if ($searchValue !== '') {
     return $searchValue;
   }
 
-  if ($selectValue === '') {
-    return $defaultCity;
+  if ($selectValue !== '') {
+    $matchedCity = matchKnownCity($selectValue, $cities);
+
+    return $matchedCity !== '' ? $matchedCity : $selectValue;
   }
 
-  foreach ($cities as $city) {
-    if (strcasecmp(normalizeCityName($city), $selectValue) === 0) {
-      return $city;
-    }
+  if ($cookieValue !== '') {
+    $matchedCity = matchKnownCity($cookieValue, $cities);
+
+    return $matchedCity !== '' ? $matchedCity : $cookieValue;
   }
 
   return $defaultCity;
