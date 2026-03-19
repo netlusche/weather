@@ -13,8 +13,8 @@ function getTranslations() {
       'intro' => 'Wähle einen Ort per Select oder tippe im Suchfeld los. Standardmäßig bekommst du eine kompakte 5-Tage-Übersicht und kannst die komplette 3-Stunden-Vorhersage bei Bedarf erweitern.',
       'theme' => 'Theme',
       'language' => 'Sprache',
-      'theme_light' => 'Standard - hell',
-      'theme_dark' => 'Standard - dunkel',
+      'theme_light' => 'Light',
+      'theme_dark' => 'Dark',
       'theme_cyberpunk' => 'Cyberpunk',
       'theme_matrix' => 'Matrix',
       'theme_lcars' => 'LCARS',
@@ -41,8 +41,8 @@ function getTranslations() {
       'intro' => 'Choose a city from the selector or start typing in the search field. By default, you get a compact 5-day overview and can expand the full 3-hour forecast when needed.',
       'theme' => 'Theme',
       'language' => 'Language',
-      'theme_light' => 'Standard - light',
-      'theme_dark' => 'Standard - dark',
+      'theme_light' => 'Light',
+      'theme_dark' => 'Dark',
       'theme_cyberpunk' => 'Cyberpunk',
       'theme_matrix' => 'Matrix',
       'theme_lcars' => 'LCARS',
@@ -90,8 +90,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'suggest') {
 
 $translations = getTranslations();
 $themeOptions = array(
-  'light' => t('theme_light', $translations, $uiLanguage),
   'dark' => t('theme_dark', $translations, $uiLanguage),
+  'light' => t('theme_light', $translations, $uiLanguage),
   'cyberpunk' => t('theme_cyberpunk', $translations, $uiLanguage),
   'matrix' => t('theme_matrix', $translations, $uiLanguage),
   'lcars' => t('theme_lcars', $translations, $uiLanguage)
@@ -144,7 +144,7 @@ function e($value) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?php echo e(t('page_title', $translations, $uiLanguage)); ?></title>
   <script>
-    const savedTheme = localStorage.getItem('weatherTheme') || 'light';
+    const savedTheme = localStorage.getItem('weatherTheme') || 'dark';
     document.documentElement.dataset.theme = savedTheme;
   </script>
   <link rel="stylesheet" href="<?php echo e(assetPath('style.css')); ?>">
@@ -157,7 +157,7 @@ function e($value) {
         <div class="mini-control">
           <span class="control-label inline-label"><?php echo e(t('theme', $translations, $uiLanguage)); ?></span>
           <div class="field-wrap field-select custom-select compact-select inline-select" id="theme-select-wrap">
-            <input type="hidden" id="theme-select" value="light">
+            <input type="hidden" id="theme-select" value="dark">
             <button
               type="button"
               class="select-trigger compact-trigger"
@@ -166,16 +166,16 @@ function e($value) {
               aria-expanded="false"
               aria-controls="theme-select-list"
             >
-              <span id="theme-select-label"><?php echo e($themeOptions['light']); ?></span>
+              <span id="theme-select-label"><?php echo e($themeOptions['dark']); ?></span>
             </button>
             <div class="select-overlay compact-overlay" id="theme-select-list" role="listbox" hidden>
               <?php foreach ($themeOptions as $themeValue => $themeLabel): ?>
                 <button
                   type="button"
-                  class="select-option compact-option<?php echo $themeValue === 'light' ? ' is-selected' : ''; ?>"
+                  class="select-option compact-option<?php echo $themeValue === 'dark' ? ' is-selected' : ''; ?>"
                   data-value="<?php echo e($themeValue); ?>"
                   role="option"
-                  aria-selected="<?php echo $themeValue === 'light' ? 'true' : 'false'; ?>"
+                  aria-selected="<?php echo $themeValue === 'dark' ? 'true' : 'false'; ?>"
                 >
                   <?php echo e($themeLabel); ?>
                 </button>
@@ -470,7 +470,7 @@ function e($value) {
       }
     });
 
-    const initialTheme = localStorage.getItem('weatherTheme') || 'light';
+    const initialTheme = localStorage.getItem('weatherTheme') || 'dark';
     themeSelect.setValue(initialTheme, themeLabels[initialTheme] || themeLabels.light);
     document.documentElement.dataset.theme = initialTheme;
 
