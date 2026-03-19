@@ -155,7 +155,7 @@ function resolveLocation($cities) {
 }
 
 function getSearchInputValue() {
-  return isset($_POST['location_search']) ? trim((string) $_POST['location_search']) : '';
+  return '';
 }
 
 function getSupportedLanguage($value) {
@@ -192,11 +192,11 @@ function getLanguageValue() {
     return getSupportedLanguage($_GET['lang']);
   }
 
-  if (isset($_COOKIE['weather_lang'])) {
-    return getSupportedLanguage($_COOKIE['weather_lang']);
+  if (isset($_COOKIE['weather_ui_lang'])) {
+    return getSupportedLanguage($_COOKIE['weather_ui_lang']);
   }
 
-  return getBrowserLanguage();
+  return 'en';
 }
 
 function fetchWeatherData($url) {

@@ -2,7 +2,6 @@
 require_once __DIR__ . '/getweather.php';
 
 $uiLanguage = getLanguageValue();
-setcookie('weather_lang', $uiLanguage, time() + (60 * 60 * 24 * 365), '/');
 
 function getTranslations() {
   return array(
@@ -97,13 +96,20 @@ $themeOptions = array(
   'lcars' => t('theme_lcars', $translations, $uiLanguage)
 );
 $languageOptions = array(
-  'de' => t('language_de', $translations, $uiLanguage),
-  'en' => t('language_en', $translations, $uiLanguage)
+  'en' => t('language_en', $translations, $uiLanguage),
+  'de' => t('language_de', $translations, $uiLanguage)
 );
 
 $cities = getCities();
 $basePath = getBasePath();
 $cookiePath = $basePath !== '' ? $basePath : '/';
+$shouldPersistLanguage = isset($_POST['ui_lang']) || isset($_GET['lang']) || isset($_COOKIE['weather_ui_lang']);
+
+if ($shouldPersistLanguage) {
+  setcookie('weather_ui_lang', $uiLanguage, time() + (60 * 60 * 24 * 365), $cookiePath);
+}
+
+setcookie('weather_lang', '', time() - 3600, '/');
 $searchInputValue = getSearchInputValue();
 $selectedLocation = resolveLocation($cities);
 setcookie('weather_location', $selectedLocation, time() + (60 * 60 * 24 * 365), $cookiePath);
@@ -144,6 +150,18 @@ function e($value) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?php echo e(t('page_title', $translations, $uiLanguage)); ?></title>
   <script>
+    const currentLanguage = '<?php echo e($uiLanguage); ?>';
+    const hasSavedLanguage = document.cookie.split('; ').some((entry) => entry.startsWith('weather_ui_lang='));
+    const url = new URL(window.location.href);
+    const hasExplicitLanguage = url.searchParams.has('lang');
+    const browserLanguage = (navigator.language || navigator.userLanguage || 'en').slice(0, 2).toLowerCase();
+    const preferredLanguage = browserLanguage === 'de' ? 'de' : 'en';
+
+    if (!hasSavedLanguage && !hasExplicitLanguage && preferredLanguage !== currentLanguage) {
+      url.searchParams.set('lang', preferredLanguage);
+      window.location.replace(url.toString());
+    }
+
     const savedTheme = localStorage.getItem('weatherTheme') || 'dark';
     document.documentElement.dataset.theme = savedTheme;
   </script>
